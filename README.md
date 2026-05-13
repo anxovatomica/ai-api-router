@@ -4,6 +4,8 @@
 
 **Smart proxy/router for AI LLM APIs.** One API key, multiple providers (Groq, Together AI, Fireworks), auto-fallback on failures.
 
+**🌐 Live Demo:** http://43.98.167.138:8001
+
 ## What It Does
 
 - **One API key** → routes to the best available LLM provider

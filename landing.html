@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI API Router — One Key. Every LLM. Zero Downtime.</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --surface: #16161f;
+  --surface2: #1c1c26;
+  --text: #e8e8f0;
+  --text2: #9090a8;
+  --accent: #6366f1;
+  --accent2: #818cf8;
+  --accent3: #4f46e5;
+  --border: #252535;
+  --success: #10b981;
+  --warning: #f59e0b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* NAV */
+nav { padding: 20px 0; border-bottom: 1px solid var(--border); }
+nav .container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-weight: 800; font-size: 1.3rem; color: var(--text); }
+.logo span { color: var(--accent); }
+.nav-links a { color: var(--text2); text-decoration: none; margin-left: 32px; font-size: 0.9rem; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+/* HERO */
+.hero { padding: 100px 0 80px; text-align: center; }
+.hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+.hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { font-size: 1.25rem; color: var(--text2); max-width: 640px; margin: 0 auto 40px; }
+.cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent3), var(--accent));
+  color: white;
+  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4); }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--surface2); }
+
+/* CODE DEMO */
+.code-demo {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 720px;
+  margin: 60px auto 0;
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.85rem;
+  text-align: left;
+}
+.code-demo .comment { color: #6b7280; }
+.code-demo .key { color: #93c5fd; }
+.code-demo .string { color: #86efac; }
+.code-demo .num { color: #fca5a5; }
+.code-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.red { background: #ef4444; }
+.dot.yellow { background: #f59e0b; }
+.dot.green { background: #10b981; }
+
+/* SOCIAL PROOF */
+.social { padding: 60px 0; text-align: center; border-top: 1px solid var(--border); }
+.social h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text2); margin-bottom: 40px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.stat h4 { font-size: 2.5rem; font-weight: 700; color: var(--accent2); }
+.stat p { color: var(--text2); font-size: 0.9rem; margin-top: 4px; }
+
+/* FEATURES */
+.features { padding: 80px 0; }
+.features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; }
+.features h2 span { color: var(--accent); }
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.2s;
+}
+.feature-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+.feature-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--accent3), var(--accent));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 20px;
+}
+.feature-card h3 { font-size: 1.15rem; margin-bottom: 12px; }
+.feature-card p { color: var(--text2); font-size: 0.9rem; }
+
+/* HOW IT WORKS */
+.how { padding: 80px 0; background: var(--bg2); }
+.how h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.step { text-align: center; }
+.step-num {
+  width: 56px; height: 56px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 700; color: var(--accent);
+  margin: 0 auto 20px;
+}
+.step h3 { margin-bottom: 12px; }
+.step p { color: var(--text2); font-size: 0.95rem; }
+
+/* PRICING */
+.pricing { padding: 80px 0; }
+.pricing h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.price-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 32px;
+  text-align: center;
+}
+.price-card.popular {
+  border-color: var(--accent);
+  position: relative;
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+}
+.popular-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: white;
+  padding: 4px 16px; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+}
+.price-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+.price-card .price { font-size: 3rem; font-weight: 800; margin: 16px 0; }
+.price-card .price span { font-size: 1rem; font-weight: 400; color: var(--text2); }
+.price-card ul { list-style: none; text-align: left; margin: 24px 0; }
+.price-card ul li { padding: 8px 0; color: var(--text2); font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+.price-card ul li:before { content: "✓"; color: var(--success); margin-right: 10px; font-weight: 700; }
+
+/* CTA */
+.cta-section {
+  padding: 100px 0;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  border-top: 1px solid var(--border);
+}
+.cta-section h2 { font-size: 2.5rem; margin-bottom: 20px; }
+.cta-section p { color: var(--text2); font-size: 1.1rem; margin-bottom: 40px; }
+
+/* FOOTER */
+footer { padding: 40px 0; text-align: center; color: var(--text2); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.2rem; }
+  .feature-grid, .steps, .pricing-grid, .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">AI API <span>Router</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/anxovatomica/ai-api-router">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <h1>One API Key.<br><span>Every LLM.</span> Zero Downtime.</h1>
+    <p>Route your AI requests across Groq, Together, Fireworks, and more. Auto-fallback when providers fail. Cut costs by 40% without changing your code.</p>
+    <div class="cta-group">
+      <a href="https://github.com/anxovatomica/ai-api-router" class="btn btn-primary">Get Started Free</a>
+      <a href="#features" class="btn btn-secondary">How It Works</a>
+    </div>
+    <div class="code-demo">
+      <div class="code-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+      <div><span class="comment"># Drop-in replacement for OpenAI</span></div>
+      <div><span class="key">curl</span> <span class="string">https://your-router.com/v1/chat/completions</span> \\</div>
+      <div>  -H <span class="string">"Authorization: Bearer YOUR_KEY"</span> \\</div>
+      <div>  -H <span class="string">"Content-Type: application/json"</span> \\</div>
+      <div>  -d <span class="string">'{"model": "llama-3.1-70b", "messages": [{"role": "user", "content": "Hello"}]}'</span></div>
+      <div style="margin-top:12px; color:var(--text2);">→ Auto-routed to cheapest available provider. Fallbacks on 429.</div>
+    </div>
+  </div>
+</section>
+
+<section class="social">
+  <div class="container">
+    <h3>Built for teams that ship</h3>
+    <div class="stats">
+      <div class="stat"><h4>3+</h4><p>LLM Providers</p></div>
+      <div class="stat"><h4>12</h4><p>Models Supported</p></div>
+      <div class="stat"><h4>60s</h4><p>Health Check Cycle</p></div>
+      <div class="stat"><h4>99.9%</h4><p>Uptime Target</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <h2>Why developers choose <span>AI API Router</span></h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Auto-Fallback</h3>
+        <p>Provider returns 429? Router instantly tries the next one. Your users never see downtime. Health checks every 60 seconds keep the routing table fresh.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Cost Optimization</h3>
+        <p>Route to the cheapest provider per model. Groq for speed, Together for coverage, Fireworks for scale. Pay less without managing 5 API dashboards.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔌</div>
+        <h3>Drop-in Replacement</h3>
+        <p>OpenAI-compatible `/v1/chat/completions` endpoint. Streaming support included. Change your base URL and bearer token — done.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Usage Dashboard</h3>
+        <p>Dark-themed admin panel showing per-user tokens, per-provider costs, and request volume. Export data or set daily limits per API key.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Simple Auth</h3>
+        <p>One API key per user. Daily rate limits per tier. Admin endpoints for user management. SQLite backend — zero external database to manage.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Self-Host in Minutes</h3>
+        <p>Deploy to Render with one click. Dockerfile included. Or run locally with `./deploy.sh`. Your data stays on your infrastructure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Get Your Key</h3>
+        <p>Sign up and get a single API key. No need to juggle 5 different provider accounts.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Change Your Base URL</h3>
+        <p>Point your existing OpenAI client at our router. Same endpoints, same response format.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Let It Route</h3>
+        <p>We pick the best provider for your model, handle rate limits, and fall back if something breaks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <h2>Simple pricing. No surprises.</h2>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price">$0<span>/month</span></div>
+        <ul>
+          <li>1,000 requests/day</li>
+          <li>3 providers</li>
+          <li>Basic fallback</li>
+          <li>Community support</li>
+        </ul>
+        <a href="https://github.com/anxovatomica/ai-api-router" class="btn btn-secondary" style="width:100%">Start Free</a>
+      </div>
+      <div class="price-card popular">
+        <div class="popular-badge">Most Popular</div>
+        <h3>Pro</h3>
+        <div class="price">$5<span>/month</span></div>
+        <ul>
+          <li>10,000 requests/day</li>
+          <li>All providers + new ones</li>
+          <li>Smart cost routing</li>
+          <li>Admin dashboard</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://github.com/anxovatomica/ai-api-router" class="btn btn-primary" style="width:100%">Get Pro</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <ul>
+          <li>Unlimited requests</li>
+          <li>Custom providers</li>
+          <li>SSO & audit logs</li>
+          <li>Dedicated support</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="mailto:hello@pingpaid.online" class="btn btn-secondary" style="width:100%">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Stop managing API keys. Start shipping.</h2>
+    <p>Join developers who route smarter. Free tier — no credit card.</p>
+    <a href="https://github.com/anxovatomica/ai-api-router" class="btn btn-primary">Deploy on Render — Free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Built by <a href="https://github.com/anxovatomica" style="color:var(--accent); text-decoration:none;">@anxovatomica</a> · Open source on GitHub · Also check out <a href="https://github.com/anxovatomica/deploy-button-generator" style="color:var(--accent2); text-decoration:none;">Deploy Button Generator</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

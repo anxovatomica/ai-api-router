@@ -94,6 +94,42 @@ async def root():
         }
     }
 
+@app.get("/landing", response_class=HTMLResponse)
+async def landing_page():
+    """Serve the marketing landing page."""
+    with open("templates/index.html", "r") as f:
+        return f.read()
+
+@app.post("/track-visit")
+async def track_visit(request: Request):
+    """Track a visit to the landing page."""
+    try:
+        await db_module.log_visit(
+            ip=request.client.host,
+            user_agent=request.headers.get("user-agent", ""),
+            path="/landing"
+        )
+    except Exception:
+        pass
+    return {"status": "ok"}
+
+@app.get("/stats")
+async def public_stats():
+    """Public stats endpoint for social proof."""
+    try:
+        users = await db_module.list_users()
+        usage_stats = await db_module.get_usage_stats(30)
+        total_requests = sum(s.get("requests", 0) for s in usage_stats)
+        return {
+            "users": len(users),
+            "requests_30d": total_requests,
+            "providers": 3,
+            "models": 12,
+            "status": "live"
+        }
+    except Exception:
+        return {"users": 0, "requests_30d": 0, "providers": 3, "models": 12, "status": "live"}
+
 @app.get("/health")
 async def health():
     providers = await provider_router.get_provider_status()

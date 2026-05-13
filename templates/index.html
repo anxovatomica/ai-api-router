@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API Router — Smart LLM Proxy with Auto-Fallback</title>
+    <meta name="description" content="One API key, multiple LLM providers (Groq, Together, Fireworks), auto-fallback on rate limits. OpenAI-compatible. Self-hosted. Free tier.">
+    <meta name="keywords" content="LLM proxy, API router, Groq, Together AI, Fireworks, OpenAI alternative, rate limit fallback, AI infrastructure">
+    <meta property="og:title" content="AI API Router — Smart LLM Proxy with Auto-Fallback">
+    <meta property="og:description" content="One API key, multiple providers, zero downtime. Self-hosted LLM proxy.">
+    <meta property="og:url" content="http://43.98.167.138:8001">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI API Router — Smart LLM Proxy">
+    <meta name="twitter:description" content="One key. Every LLM. Zero downtime. Auto-fallback across Groq, Together, Fireworks.">
+    <link rel="canonical" href="http://43.98.167.138:8001">
+    <style>
+        /* Previous styles + analytics badge */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e4e4e7; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .hero { padding: 120px 0 80px; text-align: center; background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .badge { display: inline-block; padding: 6px 16px; background: rgba(239,68,68,0.15); color: #ef4444; border-radius: 20px; font-size: 14px; font-weight: 500; margin-bottom: 24px; border: 1px solid rgba(239,68,68,0.3); }
+        h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+        h1 .highlight { background: linear-gradient(135deg, #ef4444, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subtitle { font-size: 20px; color: #a1a1aa; max-width: 600px; margin: 0 auto 40px; }
+        .cta-group { display: flex; gap: 16px; justify-content: center; margin-bottom: 60px; flex-wrap: wrap; }
+        .btn-primary { padding: 14px 32px; background: linear-gradient(135deg, #ef4444, #f97316); color: white; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; border: none; cursor: pointer; font-size: 16px; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(239,68,68,0.3); }
+        .btn-secondary { padding: 14px 32px; background: transparent; color: #e4e4e7; border: 1px solid #3f3f46; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: #ef4444; }
+        .stats-bar { display: flex; justify-content: center; gap: 48px; padding: 32px 0; border-top: 1px solid #27272a; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 32px; font-weight: 700; color: #ef4444; }
+        .stat-label { font-size: 14px; color: #71717a; }
+        .code-demo { background: #1a1a2e; border: 1px solid #27272a; border-radius: 12px; padding: 24px; max-width: 700px; margin: 40px auto; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .code-demo .comment { color: #71717a; }
+        .code-demo .keyword { color: #c084fc; }
+        .code-demo .string { color: #4ade80; }
+        .features { padding: 80px 0; }
+        .features h2 { text-align: center; font-size: 40px; margin-bottom: 60px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .feature-card { background: #1a1a2e; border: 1px solid #27272a; border-radius: 12px; padding: 32px; transition: transform 0.2s, border-color 0.2s; }
+        .feature-card:hover { transform: translateY(-4px); border-color: #ef4444; }
+        .feature-icon { font-size: 32px; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 20px; margin-bottom: 12px; }
+        .feature-card p { color: #a1a1aa; font-size: 15px; }
+        .pricing { padding: 80px 0; background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%); }
+        .pricing h2 { text-align: center; font-size: 40px; margin-bottom: 60px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; }
+        .pricing-card { background: #1a1a2e; border: 1px solid #27272a; border-radius: 12px; padding: 40px 32px; text-align: center; }
+        .pricing-card.featured { border-color: #ef4444; position: relative; }
+        .pricing-card.featured::before { content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .pricing-card h3 { font-size: 20px; margin-bottom: 8px; }
+        .pricing-card .price { font-size: 48px; font-weight: 700; margin: 16px 0; }
+        .pricing-card .price span { font-size: 16px; color: #71717a; font-weight: 400; }
+        .pricing-card ul { list-style: none; text-align: left; margin: 24px 0; }
+        .pricing-card ul li { padding: 8px 0; color: #a1a1aa; }
+        .pricing-card ul li::before { content: '✓ '; color: #22c55e; font-weight: 700; }
+        .footer { padding: 60px 0; text-align: center; border-top: 1px solid #27272a; }
+        .footer a { color: #ef4444; text-decoration: none; }
+        .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-links a { color: #a1a1aa; text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: #ef4444; }
+        .live-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(34,197,94,0.15); color: #22c55e; border-radius: 20px; font-size: 14px; margin-bottom: 16px; border: 1px solid rgba(34,197,94,0.3); }
+        .live-badge::before { content: ''; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @media (max-width: 768px) { h1 { font-size: 36px; } .stats-bar { flex-direction: column; gap: 24px; } }
+    </style>
+    <!-- Simple visitor counter -->
+    <script>
+        fetch('/track-visit', {method: 'POST'}).catch(() => {});
+    </script>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="live-badge">🔴 LIVE — All 3 Providers Healthy</div>
+            <div class="badge">🚀 Open Source · Self-Hosted · Free Tier</div>
+            <h1>One API Key.<br><span class="highlight">Every LLM.</span><br>Zero Downtime.</h1>
+            <p class="subtitle">Smart proxy that routes across Groq, Together AI, and Fireworks. Auto-fallback when providers fail. OpenAI-compatible drop-in replacement.</p>
+            <div class="cta-group">
+                <a href="https://github.com/anxovatomica/ai-api-router" class="btn-secondary">⭐ Star on GitHub</a>
+                <a href="https://render.com/deploy?repo=https://github.com/anxovatomica/ai-api-router" class="btn-primary">Deploy to Render</a>
+            </div>
+            <div class="stats-bar">
+                <div class="stat"><div class="stat-number">3</div><div class="stat-label">LLM Providers</div></div>
+                <div class="stat"><div class="stat-number">12</div><div class="stat-label">Models Mapped</div></div>
+                <div class="stat"><div class="stat-number">60s</div><div class="stat-label">Health Checks</div></div>
+                <div class="stat"><div class="stat-number">0</div><div class="stat-label">Config Changes</div></div>
+            </div>
+            <div class="code-demo">
+                <div class="comment"># Change one line. Keep everything else.</div>
+                <div><span class="keyword">import</span> openai</div>
+                <div>client = openai.OpenAI(</div>
+                <div>    base_url=<span class="string">"http://43.98.167.138:8001/v1"</span>,</div>
+                <div>    api_key=<span class="string">"your-router-key"</span></div>
+                <div>)</div>
+                <div>response = client.chat.completions.create(</div>
+                <div>    model=<span class="string">"llama-3.1-70b"</span>,</div>
+                <div>    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"Hello!"</span>}]</div>
+                <div>)</div>
+                <div class="comment"># If Groq is down → Together → Fireworks. Seamless.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="container">
+            <h2>Why Developers Choose <span class="highlight">AI API Router</span></h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Auto-Fallback</h3>
+                    <p>When a provider hits rate limits (429) or errors (5xx), automatically tries the next provider. Your users never see downtime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Drop-in Replacement</h3>
+                    <p>OpenAI-compatible <code>/v1/chat/completions</code> endpoint. Change your base URL. Done. Zero code changes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Admin Dashboard</h3>
+                    <p>Dark-themed dashboard showing provider health, usage per API key, tokens in/out, and request latency.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏥</div>
+                    <h3>Health Monitoring</h3>
+                    <p>Checks all providers every 60 seconds. Dead providers auto-disable. Healthy ones auto-re-enable. Fully automatic.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Cost Optimization</h3>
+                    <p>Route to the cheapest provider per model. Track usage per user per day. Set rate limits and quotas.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🐳</div>
+                    <h3>Self-Hosted</h3>
+                    <p>Dockerized with one-click Render deploy. SQLite database — no external dependencies. Own your infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pricing">
+        <div class="container">
+            <h2>Simple <span class="highlight">Pricing</span></h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/month</span></div>
+                    <ul>
+                        <li>1,000 requests/day</li>
+                        <li>3 providers</li>
+                        <li>12 models</li>
+                        <li>Basic dashboard</li>
+                        <li>Community support</li>
+                    </ul>
+                    <a href="https://render.com/deploy?repo=https://github.com/anxovatomica/ai-api-router" class="btn-secondary" style="width: 100%; display: inline-block; text-align: center;">Deploy Free</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Pro</h3>
+                    <div class="price">$5<span>/month</span></div>
+                    <ul>
+                        <li>10,000 requests/day</li>
+                        <li>Smart cost routing</li>
+                        <li>Priority provider selection</li>
+                        <li>Advanced analytics</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="https://github.com/anxovatomica/ai-api-router" class="btn-primary" style="width: 100%; display: inline-block; text-align: center;">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">Custom</div>
+                    <ul>
+                        <li>Unlimited requests</li>
+                        <li>Custom providers</li>
+                        <li>SLA guarantee</li>
+                        <li>Dedicated support</li>
+                        <li>Custom deployments</li>
+                    </ul>
+                    <a href="https://github.com/anxovatomica/ai-api-router/issues" class="btn-secondary" style="width: 100%; display: inline-block; text-align: center;">Contact</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/anxovatomica/ai-api-router">GitHub</a>
+                <a href="http://43.98.167.138:8001/admin/dashboard">Dashboard</a>
+                <a href="http://43.98.167.138:8001/v1/models">Models</a>
+                <a href="http://43.98.167.138:8002">Deploy Button Generator</a>
+            </div>
+            <p style="color: #71717a; font-size: 14px;">Built by <a href="https://github.com/anxovatomica">@anxovatomica</a> · Open source under MIT</p>
+        </div>
+    </div>
+</body>
+</html>

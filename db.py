@@ -56,6 +56,17 @@ async def init_db():
             )
         """)
         
+        # Visit tracking for landing page
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS visits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip TEXT,
+                user_agent TEXT,
+                path TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
         # Initialize provider health rows
         for provider in ["groq", "together", "fireworks"]:
             await db.execute("""
@@ -241,3 +252,23 @@ async def reset_provider_health(provider: str) -> None:
             WHERE provider = ?
         """, (now, now, provider))
         await db.commit()
+
+# ─── Visit tracking ───
+
+async def log_visit(ip: str, user_agent: str, path: str) -> None:
+    """Log a visit to the landing page."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "INSERT INTO visits (ip, user_agent, path) VALUES (?, ?, ?)",
+            (ip, user_agent, path)
+        )
+        await db.commit()
+
+async def get_visit_count(days: int = 30) -> int:
+    """Get total visit count for the last N days."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(
+            "SELECT COUNT(*) FROM visits WHERE created_at >= date('now', '-{} days')".format(days)
+        ) as cursor:
+            row = await cursor.fetchone()
+            return row[0] if row else 0

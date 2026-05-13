@@ -1,5 +1,7 @@
 # AI API Router 🔥
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/anxovatomica/ai-api-router)
+
 **Smart proxy/router for AI LLM APIs.** One API key, multiple providers (Groq, Together AI, Fireworks), auto-fallback on failures.
 
 ## What It Does

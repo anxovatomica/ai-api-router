@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ai-api-router
+    runtime: docker
+    plan: free
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TOGETHER_API_KEY
+        sync: false
+      - key: FIREWORKS_API_KEY
+        sync: false
+      - key: ADMIN_API_KEY
+        generateValue: true
+      - key: PORT
+        value: 8000
+      - key: DEBUG
+        value: "false"
+    healthCheckPath: /health
+    autoDeploy: true

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI API Router — Dashboard</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#e5e5e5;padding:2rem;min-height:100vh}
+  h1{font-size:2rem;margin-bottom:0.5rem;color:#fff}
+  .subtitle{color:#888;margin-bottom:2rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
+  .card{background:#141414;border:1px solid #222;border-radius:12px;padding:1.5rem}
+  .card h3{font-size:0.875rem;text-transform:uppercase;letter-spacing:0.05em;color:#888;margin-bottom:1rem}
+  .big-number{font-size:2.5rem;font-weight:700;color:#fff}
+  .big-number.ok{color:#22c55e}
+  .big-number.warn{color:#f59e0b}
+  .big-number.error{color:#ef4444}
+  .status-badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600}
+  .status-ok{background:rgba(34,197,94,0.15);color:#22c55e}
+  .status-down{background:rgba(239,68,68,0.15);color:#ef4444}
+  .provider-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid #222}
+  .provider-row:last-child{border-bottom:none}
+  .provider-name{font-weight:600}
+  .provider-meta{color:#666;font-size:0.875rem}
+  .error-text{color:#ef4444;font-size:0.75rem;margin-top:0.25rem}
+  table{width:100%;border-collapse:collapse;font-size:0.875rem}
+  th{text-align:left;padding:0.75rem;color:#888;font-weight:500;border-bottom:1px solid #333}
+  td{padding:0.75rem;border-bottom:1px solid #222}
+  .refresh-btn{background:#222;color:#fff;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-size:0.875rem}
+  .refresh-btn:hover{background:#333}
+  .section-title{font-size:1.25rem;margin:2rem 0 1rem;color:#fff}
+  .endpoint{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:1rem;font-family:monospace;font-size:0.8rem;color:#aaa;overflow-x:auto;margin-bottom:1rem}
+  .endpoint .method{color:#22c55e;font-weight:700}
+</style>
+</head>
+<body>
+
+<h1>🔥 AI API Router</h1>
+<p class="subtitle">Live admin dashboard — auto-refreshes every 30s</p>
+
+<div style="margin-bottom:1.5rem">
+  <label style="color:#888;font-size:0.875rem">Admin API Key:</label><br>
+  <input type="password" id="adminKey" placeholder="Bearer ..." style="background:#141414;border:1px solid #333;color:#fff;padding:0.5rem 0.75rem;border-radius:8px;width:100%;max-width:400px;margin-top:0.5rem;font-family:monospace">
+  <button class="refresh-btn" onclick="loadDashboard()" style="margin-left:0.5rem">Load</button>
+</div>
+
+<div id="dashboard" style="display:none">
+  <div class="grid" id="summaryCards"></div>
+
+  <h2 class="section-title">Providers</h2>
+  <div class="card" id="providersCard"></div>
+
+  <h2 class="section-title">Usage (Last 7 Days)</h2>
+  <div class="card">
+    <table id="usageTable">
+      <thead><tr><th>Day</th><th>Provider</th><th>Requests</th><th>Input Tokens</th><th>Output Tokens</th><th>Avg Latency</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Users</h2>
+  <div class="card">
+    <table id="usersTable">
+      <thead><tr><th>API Key</th><th>Name</th><th>Email</th><th>Tier</th><th>Limit</th><th>Active</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Quick API Test</h2>
+  <div class="card">
+    <div class="endpoint"><span class="method">POST</span> /v1/chat/completions</div>
+    <button class="refresh-btn" onclick="testChat()">Test Chat</button>
+    <pre id="testResult" style="margin-top:1rem;color:#aaa;font-size:0.8rem;white-space:pre-wrap"></pre>
+  </div>
+</div>
+
+<div id="error" style="display:none;color:#ef4444;margin-top:1rem"></div>
+
+<script>
+const API_BASE = window.location.origin;
+let adminKey = '';
+
+async function loadDashboard() {
+  const input = document.getElementById('adminKey').value.trim();
+  adminKey = input.startsWith('Bearer') ? input : `Bearer ${input}`;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/dashboard`, {
+      headers: { 'Authorization': adminKey }
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+
+    const data = await res.json();
+    renderDashboard(data);
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('error').style.display = 'none';
+  } catch (e) {
+    document.getElementById('error').textContent = 'Error: ' + e.message;
+    document.getElementById('error').style.display = 'block';
+  }
+}
+
+function renderDashboard(data) {
+  const s = data.summary;
+  document.getElementById('summaryCards').innerHTML = `
+    <div class="card"><h3>Total Users</h3><div class="big-number ok">${s.total_users}</div></div>
+    <div class="card"><h3>7-Day Requests</h3><div class="big-number">${s.total_requests_7d.toLocaleString()}</div></div>
+    <div class="card"><h3>7-Day Tokens</h3><div class="big-number">${s.total_tokens_7d.toLocaleString()}</div></div>
+    <div class="card"><h3>Healthy Providers</h3><div class="big-number ${s.healthy_providers === s.total_providers ? 'ok' : s.healthy_providers > 0 ? 'warn' : 'error'}">${s.healthy_providers}/${s.total_providers}</div></div>
+  `;
+
+  document.getElementById('providersCard').innerHTML = data.providers.map(p => `
+    <div class="provider-row">
+      <div>
+        <div class="provider-name">${p.provider}</div>
+        <div class="provider-meta">Latency: ${p.avg_latency_ms}ms | Success: ${p.success_count} | Failures: ${p.failure_count}</div>
+        ${p.last_error ? `<div class="error-text">${p.last_error}</div>` : ''}
+      </div>
+      <span class="status-badge ${p.is_healthy ? 'status-ok' : 'status-down'}">${p.is_healthy ? 'HEALTHY' : 'DOWN'}</span>
+    </div>
+  `).join('');
+
+  const usageBody = document.querySelector('#usageTable tbody');
+  usageBody.innerHTML = (data.usage_by_day || []).map(u => `
+    <tr>
+      <td>${u.day}</td>
+      <td>${u.provider}</td>
+      <td>${u.requests}</td>
+      <td>${u.tokens_input?.toLocaleString() || 0}</td>
+      <td>${u.tokens_output?.toLocaleString() || 0}</td>
+      <td>${Math.round(u.avg_latency || 0)}ms</td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="color:#666">No usage data yet</td></tr>';
+
+  const usersBody = document.querySelector('#usersTable tbody');
+  usersBody.innerHTML = (data.users || []).map(u => `
+    <tr>
+      <td><code style="font-size:0.75rem">${u.api_key.slice(0, 20)}...</code></td>
+      <td>${u.name || '-'}</td>
+      <td>${u.email || '-'}</td>
+      <td><span class="status-badge ${u.tier === 'pro' ? 'status-ok' : 'status-down'}">${u.tier}</span></td>
+      <td>${u.daily_limit}</td>
+      <td>${u.is_active ? '✅' : '❌'}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="color:#666">No users yet</td></tr>';
+}
+
+async function testChat() {
+  const result = document.getElementById('testResult');
+  result.textContent = 'Loading...';
+  try {
+    const users = await (await fetch(`${API_BASE}/admin/users`, { headers: { 'Authorization': adminKey } })).json();
+    const userKey = users.users?.[0]?.api_key;
+    if (!userKey) throw new Error('No users found');
+
+    const res = await fetch(`${API_BASE}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${userKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-70b',
+        messages: [{ role: 'user', content: 'Say "AI Router is live!" and nothing else.' }],
+        max_tokens: 20
+      })
+    });
+    const data = await res.json();
+    result.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    result.textContent = 'Error: ' + e.message;
+  }
+}
+
+// Auto-refresh every 30s
+setInterval(() => { if (adminKey) loadDashboard(); }, 30000);
+</script>
+
+</body>
+</html>

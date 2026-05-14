@@ -80,19 +80,30 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ─── Public endpoints ───
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return {
-        "name": "AI API Router",
-        "version": "1.0.0",
-        "status": "running",
-        "endpoints": {
-            "chat": "/v1/chat/completions",
-            "models": "/v1/models",
-            "health": "/health",
-            "docs": "/docs"
+    """Serve the AI Router homepage."""
+    try:
+        with open("templates/index.html", "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return {
+            "name": "AI API Router",
+            "version": "1.0.0",
+            "status": "running",
+            "endpoints": {
+                "chat": "/v1/chat/completions",
+                "models": "/v1/models",
+                "health": "/health",
+                "docs": "/docs"
+            }
         }
-    }
+
+@app.get("/showcase", response_class=HTMLResponse)
+async def showcase_page():
+    """Serve the combined product showcase page."""
+    with open("templates/showcase.html", "r") as f:
+        return f.read()
 
 @app.get("/landing", response_class=HTMLResponse)
 async def landing_page():

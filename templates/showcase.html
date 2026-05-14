@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>anxovatomica — Open Source AI Tools</title>
+    <meta name="description" content="Self-hosted AI infrastructure tools. LLM proxy with auto-fallback. One-click deployment generator. Built by a solo developer.">
+    <meta name="keywords" content="open source AI, LLM proxy, deployment automation, self-hosted, AI infrastructure, FastAPI">
+    <meta property="og:title" content="anxovatomica — Open Source AI Tools">
+    <meta property="og:description" content="Smart LLM routing + one-click deployment. Self-hosted. Free.">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="http://43.98.167.138:8001/showcase">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e4e4e7; line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .header { padding: 40px 0; text-align: center; border-bottom: 1px solid #27272a; }
+        .header h1 { font-size: 42px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #ef4444, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #a1a1aa; font-size: 18px; }
+        .products { padding: 60px 0; }
+        .product-card { background: #1a1a2e; border: 1px solid #27272a; border-radius: 16px; padding: 40px; margin-bottom: 32px; transition: transform 0.2s, border-color 0.2s; }
+        .product-card:hover { transform: translateY(-4px); border-color: #ef4444; }
+        .product-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .product-icon { font-size: 40px; }
+        .product-title { font-size: 28px; font-weight: 700; }
+        .product-tagline { font-size: 16px; color: #a1a1aa; }
+        .product-desc { color: #a1a1aa; margin-bottom: 24px; font-size: 16px; }
+        .product-links { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #ef4444, #f97316); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(239,68,68,0.3); }
+        .btn-secondary { background: transparent; color: #e4e4e7; border: 1px solid #3f3f46; }
+        .btn-secondary:hover { border-color: #ef4444; background: rgba(255,255,255,0.05); }
+        .stats-row { display: flex; gap: 32px; margin-top: 24px; padding-top: 24px; border-top: 1px solid #27272a; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 24px; font-weight: 700; color: #ef4444; }
+        .stat-label { font-size: 12px; color: #71717a; }
+        .footer { padding: 60px 0; text-align: center; border-top: 1px solid #27272a; }
+        .footer a { color: #ef4444; text-decoration: none; }
+        .footer p { color: #71717a; font-size: 14px; }
+        .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(34,197,94,0.15); color: #22c55e; border-radius: 20px; font-size: 13px; border: 1px solid rgba(34,197,94,0.3); }
+        .live-badge::before { content: ''; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .code-block { background: #0f0f1a; border: 1px solid #27272a; border-radius: 8px; padding: 16px; margin: 16px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; overflow-x: auto; }
+        .code-block .comment { color: #71717a; }
+        .code-block .string { color: #4ade80; }
+        @media (max-width: 768px) { .header h1 { font-size: 32px; } .product-title { font-size: 22px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="live-badge" style="margin-bottom: 20px;">🔴 All Systems Live</div>
+            <h1>anxovatomica</h1>
+            <p>Open source AI infrastructure tools · Self-hosted · Free tier</p>
+        </div>
+    </div>
+
+    <div class="products">
+        <div class="container">
+            <!-- AI API Router -->
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-icon">🔄</div>
+                    <div>
+                        <div class="product-title">AI API Router</div>
+                        <div class="product-tagline">Smart LLM proxy with auto-fallback</div>
+                    </div>
+                </div>
+                <p class="product-desc">
+                    One API key. Every LLM provider. Zero downtime. Routes across Groq, Together AI, and Fireworks 
+                    with automatic failover when providers hit rate limits. OpenAI-compatible drop-in replacement.
+                    Health checks every 60 seconds. Dark-themed admin dashboard included.
+                </p>
+                <div class="code-block">
+                    <span class="comment"># Change one line. Keep everything else.</span><br>
+                    client = openai.OpenAI(<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;base_url=<span class="string">"http://43.98.167.138:8001/v1"</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;api_key=<span class="string">"your-key"</span><br>
+                    )
+                </div>
+                <div class="product-links">
+                    <a href="http://43.98.167.138:8001/landing" class="btn btn-primary">Try Demo</a>
+                    <a href="https://github.com/anxovatomica/ai-api-router" class="btn btn-secondary">GitHub</a>
+                    <a href="https://render.com/deploy?repo=https://github.com/anxovatomica/ai-api-router" class="btn btn-secondary">Deploy to Render</a>
+                    <a href="http://43.98.167.138:8001/admin/dashboard" class="btn btn-secondary">Dashboard</a>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Providers</div></div>
+                    <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Models</div></div>
+                    <div class="stat-item"><div class="stat-num">60s</div><div class="stat-label">Health Checks</div></div>
+                    <div class="stat-item"><div class="stat-num">$0</div><div class="stat-label">Free Tier</div></div>
+                </div>
+            </div>
+
+            <!-- Deploy Button Generator -->
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-icon">🚀</div>
+                    <div>
+                        <div class="product-title">Deploy Button Generator</div>
+                        <div class="product-tagline">One-click deploy for any GitHub repo</div>
+                    </div>
+                </div>
+                <p class="product-desc">
+                    Paste a GitHub repo URL → get Dockerfile + render.yaml + README badge in 30 seconds.
+                    Auto-detects Python, Node.js, Go, Ruby, Rust, and PHP stacks. No more manual config writing.
+                    Lower the barrier to entry for your open source project.
+                </p>
+                <div class="code-block">
+                    <span class="comment"># Before: 2 hours of trial and error</span><br>
+                    <span class="comment"># After: 30 seconds</span><br>
+                    POST /api/generate {"repo_url": "github.com/you/repo"}<br>
+                    → Dockerfile + render.yaml + README badge
+                </div>
+                <div class="product-links">
+                    <a href="http://43.98.167.138:8002" class="btn btn-primary">Try Demo</a>
+                    <a href="https://github.com/anxovatomica/deploy-button-generator" class="btn btn-secondary">GitHub</a>
+                    <a href="https://render.com/deploy?repo=https://github.com/anxovatomica/deploy-button-generator" class="btn btn-secondary">Deploy to Render</a>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-num">6+</div><div class="stat-label">Stacks</div></div>
+                    <div class="stat-item"><div class="stat-num">30s</div><div class="stat-label">Setup Time</div></div>
+                    <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Files Generated</div></div>
+                    <div class="stat-item"><div class="stat-num">$0</div><div class="stat-label">Free</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>Built by <a href="https://github.com/anxovatomica">@anxovatomica</a> · <a href="https://github.com/anxovatomica/awesome-selfhosted-ai">Awesome Self-Hosted AI List</a></p>
+            <p style="margin-top: 8px; font-size: 12px;">Open source under MIT · Self-hosted · No tracking</p>
+        </div>
+    </div>
+</body>
+</html>
